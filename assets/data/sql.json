@@ -1,0 +1,267 @@
+[
+  {
+    "id": "sql-001",
+    "categoryId": "sql",
+    "number": 1,
+    "prompt": "다음과 같이 테이블을 정의하고 튜플을 삽입하였을 때 각 번호(①, ②)의 SQL문을 실행한 결\n과를 쓰시오.\nCREATE TABLE 부서 (\n부서코드 INT PRIMARY KEY,\n부서명 VARCHAR(20)\n);\nCREATE TABLE 직원 (\n직원코드 INT PRIMARY KEY,\n부서코드 INT,\n직원명 VARCHAR(20),\nFOREIGN KEY(부서코드) REFERENCES 부서(부서코드)\nON DELETE CASCADE\n);\nINSERT INTO 부서 VALUES(10, ‘영업부’);\nINSERT INTO 부서 VALUES(20, ‘기획부’);\nINSERT INTO 부서 VALUES(30, ‘개발부’);\nINSERT INTO 직원 VALUES(1001, 10, ‘이진수’);\nINSERT INTO 직원 VALUES(1002, 10, ‘곽연경’);\nINSERT INTO 직원 VALUES(1003, 20, ‘김선길’);\nINSERT INTO 직원 VALUES(1004, 20, ‘최민수’);\nINSERT INTO 직원 VALUES(1005, 20, ‘이용갑’);\nINSERT INTO 직원 VALUES(1006, 30, ‘박종일’);\nINSERT INTO 직원 VALUES(1007, 30, ‘박미경’);\n① SELECT DISTINCT COUNT(부서코드) FROM 직원 WHERE 부서코드 = 20;\n② DELETE FROM 부서 WHERE 부서코드 = 20;\nSELECT DISTINCT COUNT(부서코드) FROM 직원;",
+    "answer": "① 3\n② 4",
+    "explanation": "① 부서코드가 20인 직원은 3명입니다. DISTINCT는 부서코드가 아니라 COUNT(부서코드)의 결과에 적용되므로 결과는 3입니다.\n② ON DELETE CASCADE에 의해 부서 20을 삭제하면 해당 직원 3명도 함께 삭제됩니다. 전체 7명 중 4명이 남으므로 결과는 4입니다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      1,
+      2,
+      3
+    ],
+    "title": "COUNT·DISTINCT와 연쇄 삭제"
+  },
+  {
+    "id": "sql-002",
+    "categoryId": "sql",
+    "number": 2,
+    "prompt": "학생(STUDENT) 테이블에 전기과 학생이 50명, 전산과 학생이 100명, 전자과 학생이 50명\n있다고 할 때, 다음 SQL문 ①, ②, ③의 실행 결과로 표시되는 튜플의 수를 쓰시오. (단, DEPT\n필드는 학과를 의미한다.)\n① SELECT DEPT FROM STUDENT;\n② SELECT DISTINCT DEPT FROM STUDENT;\n③ SELECT COUNT(DISTINCT DEPT) FROM STUDENT WHERE DEPT = ‘전산과’;",
+    "answer": "• ① 200\n• ② 3\n• ③ 1",
+    "explanation": "SELECT DEPT ‘DEPT’를 표시한다.\n① FROM STUDENT; <STUDENT> 테이블을 대상으로 검색한다.\n• <STUDENT> 테이블에서 ‘DEPT’를 검색합니다.\n• 총 200개의 튜플이 들어 있고 검색 조건이 없으므로 튜플의 수는 200입니다.\nSELECT DISTINCT DEPT ‘DEPT’를 표시하되, 같은 ‘DEPT’ 속성의 값은 한 번만 표시\n한다.\n② FROM STUDENT; <STUDENT> 테이블을 대상으로 검색한다.\n• <STUDENT> 테이블에서 ‘DEPT’를 검색하는 데 중복된 결과는 처음의 한 개만 검색에 포함시킵\n니다.\n• 전기과 50개 튜플의 ‘DEPT’ 속성의 값이 같으므로 1개, 전산과 100개 튜플의 ‘DEPT’ 속성의 값\n이 같으므로 1개, 전자과 50개 튜플의 ‘DEPT’ 속성의 값이 같으므로 1개를 검색에 포함시키므로\n3개의 튜플이 검색됩니다.\nSELECT COUNT(DISTINCT DEPT) ‘DEPT’의 개수를 표시하되, 같은 ‘DEPT’ 속성의 값\n은 한 번만 계산한다.\nFROM STUDENT; <STUDENT> 테이블을 대상으로 검색한다.\n③ WHERE DEPT = ‘전산과’; ‘DEPT’가 “전산과”인 자료만을 대상으로 검색한다.\n<STUDENT> 테이블에서 ‘DEPT’ 속성의 값이 ‘전산과’인 튜플에 대해 중복을 제거하고 개수를 세\n므로 1이 검색 결과로 표시됩니다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      4
+    ],
+    "title": "DISTINCT와 집계 결과"
+  },
+  {
+    "id": "sql-003",
+    "categoryId": "sql",
+    "number": 3,
+    "prompt": "다음은 <제품>(제품명, 단가, 제조사) 테이블을 대상으로 “H” 제조사에서 생산한 제품들의\n‘단가’보다 높은 ‘단가’를 가진 제품의 정보를 조회하는 <SQL문>이다. 괄호에 알맞은 답을 적어\n<SQL문>을 완성하시오.\n<SQL문>\nSELECT 제품명, 단가, 제조사\nFROM 제품\nWHERE 단가 > ( ) (SELECT 단가 FROM 제품 WHERE 제조사 = ‘H’);",
+    "answer": "ALL",
+    "explanation": "❷ SELECT 제품명, 단가, 제조사 ‘제품명’, ‘단가’, ‘제조사’ 속성을 표시한다.\nFROM 제품 <제품> 테이블에서 검색한다.\nWHERE 단가 > ALL ( ‘단가’가 하위 질의로 검색된 모든(ALL) 단가보다 큰 자\n료만을 대상으로 한다.\n❶ SELECT 단가 ‘단가’를 표시한다.\nFROM 제품 <제품> 테이블에서 검색한다.\nWHERE 제조사 = ‘H’); 제조사가 “H”인 자료만을 대상으로 한다.\n• 문제의 질의문은 하위 질의가 있는 질의문입니다.\n• 먼저 WHERE 조건에 지정된 하위 질의의 SELECT문을 해석한 다음 그 결과를 본 질의의 조건에\n있는 ‘단가’ 속성과 비교합니다.\n• <제품> 테이블에 다음과 같은 자료가 들어있다고 가정하여 설명합니다.\n<제품>\n제품명 단가 제조사\n냉장고 200 H\nTV 150 H\n세탁기 300 H\n건조기 250 A\n핸드폰 400 B\n컴퓨터 500 C\n❶ <제품> 테이블에서 ‘제조사’ 속성의 값이 “H”인 튜플의 ‘단가’ 속성의 값을 검색합니다.\n단가\n200\n150\n300\n❷ <제품> 테이블에서 ‘단가’ 속성의 값이 ❶번에서 검색된 모든 단가보다 큰 자료를 대상으로 ‘제품\n명’, ‘단가’, ‘제조사’를 표시합니다.\n제품명 단가 제조사\n핸드폰 400 B\n컴퓨터 500 C",
+    "aliases": [
+      "ALL"
+    ],
+    "grading": "exact",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      5
+    ],
+    "title": "ALL을 이용한 하위 질의"
+  },
+  {
+    "id": "sql-004",
+    "categoryId": "sql",
+    "number": 4,
+    "prompt": "다음 <TABLE>을 참조하여 <SQL문>을 실행했을 때 출력되는 결과를 쓰시오. (<TABLE>에\n표시된 ‘NULL’은 값이 없음을 의미한다.)\n<TABLE>\nINDEX COL1 COL2\n1 2 NULL\n2 4 6\n3 3 5\n4 6 3\n5 NULL 3\n<SQL문>\nSELECT COUNT(COL2)\nFROM TABLE\nWHERE COL1 IN (2, 3)\nOR COL2 IN (3, 5);",
+    "answer": "3",
+    "explanation": "SELECT COUNT(COL2) ‘COL2’의 개수를 표시한다.\nFROM TABLE <TABLE>에서 검색한다.\nWHERE COL1 IN (2, 3) ‘COL1’이 2 또는 3이거나,\nOR COL2 IN (3, 5); ‘COL2’가 3 또는 5인 튜플만을 대상으로 한다.\n• 질의문의 조건을 만족하는 튜플은 다음과 같습니다.\nINDEX COL1 COL2\n1 2 NULL\n2 4 6\n3 3 5\n4 6 3\n5 NULL 3\n• 조건에 맞는 ‘COL2’ 속성만 추출하면 다음과 같습니다.\nCOL2\nNULL\n5\n3\n3\n• COUNT(COL2)는 ‘COL2’ 필드의 개수를 계산하지만 ‘NULL’ 값은 제외하므로 COUNT(COL2)의 결\n과는 3입니다.",
+    "aliases": [
+      "3"
+    ],
+    "grading": "exact",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      6
+    ],
+    "title": "NULL과 COUNT"
+  },
+  {
+    "id": "sql-005",
+    "categoryId": "sql",
+    "number": 5,
+    "prompt": "다음은 <EMPLOYEE> 릴레이션에 대해 <관계 대수식>을 수행했을 때 출력되는 <결과>이다. <결과>의 각 괄호(①~⑤)에 들어갈 알맞은 답을 쓰시오.\n\n<관계 대수식>\nπ_TTL(EMPLOYEE)\n\n<EMPLOYEE>\nINDEX  AGE  TTL\n1      48   부장\n2      25   대리\n3      41   과장\n4      36   차장\n\n<결과>\n( ① )\n( ② )\n( ③ )\n( ④ )\n( ⑤ )",
+    "answer": "• ① TTL\n• ② 부장\n• ③ 대리\n• ④ 과장\n• ⑤ 차장",
+    "explanation": "문제의 <관계 대수식>에서 사용된 π는 주어진 릴레이션에서 속성 리스트(Attribute List)에 제시된 속\n성 값만을 추출하여 새로운 릴레이션을 만드는 PROJECT 연산이므로, <EMPLOYEE> 릴레이션에서\n‘TTL’ 속성이 추출되어 속성명인 ‘TTL’부터 모든 속성값이 <결과>로 나타납니다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      7
+    ],
+    "title": "관계대수 PROJECT"
+  },
+  {
+    "id": "sql-006",
+    "categoryId": "sql",
+    "number": 6,
+    "prompt": "SQL과 관련한 다음 설명에서 괄호(①, ②)에 들어갈 알맞은 답을 쓰시오.\nUPDATE문은 테이블에 있는 튜플의 내용을 갱신할 때 사용하는 명령문으로, DML에 해당한다. 다른 DML\n로는 INSERT, DELETE가 있으며, 각각 새로운 튜플을 삽입하거나 삭제할 때 사용한다.\n<학부생> 테이블\n학부 학과번호 입학생수 담당관\n정경대학 110 300 김해율\n공과대학 310 250 이성관\n인문대학 120 400 김해율\n정경대학 120 300 김성수\n인문대학 420 180 이율해\n다음은 <학부생> 테이블에서 ‘입학생수’가 300 이상인 튜플의 ‘학과번호’를 999로 갱신하는 SQL문이다.\n( ① ) 학부생 ( ② ) 학과번호 = 999 WHERE 입학생수 >= 300;",
+    "answer": "• ① UPDATE\n• ② SET",
+    "explanation": "• SQL문\nUPDATE 학부생 ‘학부생’ 테이블을 갱신하라.\nSET 학과번호 = 999 ‘학과번호’를 999로 갱신하라.\nWHERE 입학생수 >= 300; ‘입학생수’가 300이상인 튜플만을 대상으로 하라.\n• SQL 실행 결과\n학부 학과번호 입학생수 담당관\n정경대학 999 300 김해율\n공과대학 310 250 이성관\n인문대학 999 400 김해율\n정경대학 999 300 김성수\n인문대학 420 180 이율해",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      8
+    ],
+    "title": "UPDATE와 SET"
+  },
+  {
+    "id": "sql-007",
+    "categoryId": "sql",
+    "number": 7,
+    "prompt": "<EMP_TBL> 테이블을 참고하여 <SQL문>의 실행 결과를 쓰시오.\n<EMP_TBL>\nEMPNO SAL\n100 1500\n200 3000\n300 2000\n<SQL문>\nSELECT COUNT(*) FROM EMP_TBL WHERE EMPNO > 100 AND SAL >= 3000 OR EMPNO =\n200;",
+    "answer": "1",
+    "explanation": "SQL도 프로그래밍 언어와 마찬가지로 OR 연산자에 비해 AND 연산자의 우선순위가 높다. 즉 식1\nAND 식2 OR 식3과 같이 조건이 제시된 경우 식1 AND 식2의 조건을 먼저 확인한 후 그 결과와 식3\n의 OR 조건을 확인해야 합니다.\nSELECT COUNT(*) 튜플의 개수를 표시한다.\nFROM EMP_TBL <EMP_TBL> 테이블에서 검색한다.\nWHERE EMPNO > 100 ‘EMPNO’가 100보다 크고\nAND SAL >= 3000 ‘SAL’이 3000 이상이거나,\nOR EMPNO = 200; ‘EMPNO’가 200인 튜플만을 대상으로 한다.\n<과정>\n① ‘EMPNO’가 100보다 큰 튜플은 다음과 같습니다.\nEMPNO SAL\n200 3000\n300 2000\n② ‘SAL’이 3000 이상인 튜플은 다음과 같습니다.\nEMPNO SAL\n200 3000\n③ ①, ②의 조건을 동시에 만족(AND)하는 튜플은 다음과 같습니다.\nEMPNO SAL\n200 3000\n④ ‘EMPNO’가 200인 튜플은 다음과 같습니다.\nEMPNO SAL\n200 3000\n⑤ ③번 또는 ④번의 튜플 중 한 번이라도 포함된(OR) 튜플은 다음과 같습니다.\nEMPNO SAL\n200 3000\n⑥ COUNT(*) 함수에 따라 ⑤번 튜플의 개수를 표시하면 다음과 같습니다.\nCOUNT(*)\n1",
+    "aliases": [
+      "1"
+    ],
+    "grading": "exact",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      9,
+      10
+    ],
+    "title": "AND·OR 연산자 우선순위"
+  },
+  {
+    "id": "sql-008",
+    "categoryId": "sql",
+    "number": 8,
+    "prompt": "<학생> 테이블에서 ‘이름’이 “민수”인 튜플을 삭제하고자 한다. 다음 <처리 조건>을 참고하\n여 SQL문을 작성하시오.\n<처리 조건>\n• 명령문 마지막의 세미콜론(;)은 생략이 가능하다.\n• 인용 부호가 필요한 경우 작은따옴표(‘ ’)를 사용한다.",
+    "answer": "DELETE FROM 학생 WHERE 이름 = ‘민수’;",
+    "explanation": "DELETE 삭제하라.\nFROM 학생 <학생> 테이블을 대상으로 하라.\nWHERE 이름 = ‘민수’; ‘이름’이 “민수”인 자료만을 대상으로 한다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      10
+    ],
+    "title": "DELETE문 작성"
+  },
+  {
+    "id": "sql-009",
+    "categoryId": "sql",
+    "number": 9,
+    "prompt": "다음 <속성 정의서>를 참고하여 <학생> 테이블에 대해 20자의 가변 길이를 가진 ‘주소’ 속\n성을 추가하는 <SQL문>을 완성하시오. (단, SQL문은 ISO/IEC 9075 표준을 기반으로 작성하시\n오.)\n<속성 정의서>\n속성명 데이터타입 제약조건 테이블명\n학번 CHAR(10) UNIQUE 학생\n이름 VARCAHR(8) NOT NULL 학생\n주민번호 CHAR(13) 학생\n학과 VARCAHR(16) FOREIGN KEY 학생\n학년 INT 학생\n<SQL문>\n( ① ) TABLE 학생 ( ② ) 주소 VARCHAR(20);",
+    "answer": "• ① ALTER\n• ② ADD",
+    "explanation": "ALTER TABLE 학생 수정할 테이블의 이름은 <학생>이다.\nADD 주소 VARCHAR(20); 가변 길이의 문자 20자리인 ‘주소’ 속성을 추가한다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      11
+    ],
+    "title": "ALTER TABLE과 ADD"
+  },
+  {
+    "id": "sql-010",
+    "categoryId": "sql",
+    "number": 10,
+    "prompt": "다음 <학생> 테이블을 참고하여 <처리 조건>에서 요구하는 SQL문을 작성하시오.\n<학생>\n학번 이름 학년 수강과목 점수 연락처\n(varchar) (varchar) (number) (varchar) (number) (varchar)\n20E0232 김인영 3 세무행정 4.5 010-5412-4544\n19D0024 이성화 2 토목개론 3 010-1548-4796\n20E0135 성유수 4 실용법학 3.5 010-9945-7411\n20E0511 우인혁 1 데이터론 2 010-3451-4972\n<처리 조건>\n• 3, 4학년의 학번, 이름을 조회한다.\n• IN 예약어를 사용해야 한다.\n• 속성명 아래의 괄호는 속성의 자료형을 의미한다.",
+    "answer": "SELECT 학번, 이름 FROM 학생 WHERE 학년 IN (3, 4);",
+    "explanation": "SELECT 학번, 이름 ‘학번’, ‘이름’을 표시한다.\nFROM 학생 <학생> 테이블에서 검색한다.\nWHERE 학년 IN (3, 4); ‘학년’의 값이 3 또는 4인 자료만을 대상으로 한다.\n<결과>\n학번 이름\n20E0232 김인영\n20E0135 성유수",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      12
+    ],
+    "title": "IN을 이용한 조회"
+  },
+  {
+    "id": "sql-011",
+    "categoryId": "sql",
+    "number": 11,
+    "prompt": "다음 <student> 테이블을 참고하여 ‘name’ 속성으로 ‘idx_name’이라는 인덱스를 생성하는\nSQL문을 작성하시오.\n<student>\nstid name score deptid\n2001 brown 85 PE01\n2002 white 45 EF03\n2003 black 67 UW11",
+    "answer": "CREATE INDEX idx_name ON student(name);",
+    "explanation": "CREATE INDEX idx_name ‘idx_name’이라는 이름의 인덱스를 생성한다.\nON student(name); <student> 테이블의 ‘name’ 속성을 사용한다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      13
+    ],
+    "title": "인덱스 생성"
+  },
+  {
+    "id": "sql-012",
+    "categoryId": "sql",
+    "number": 12,
+    "prompt": "다음은 <성적> 테이블에서 이름(name)과 점수(score)를 조회하되, 점수를 기준으로 내림차\n순 정렬하여 조회하는 <SQL문>이다. 괄호(①~③)에 알맞은 답을 적어 <SQL문>을 완성하시오.\n<성적>\nname class score\n정기찬 A 85\n이영호 C 74\n환정형 C 95\n김지수 A 90\n최은영 B 82\n<SQL문>\nSELECT name, score\nFROM 성적\n( ① ) BY ( ② ) ( ③ )",
+    "answer": "• ① ORDER\n• ② score\n• ③ DESC",
+    "explanation": "SELECT name, score ‘name’과 ‘score’를 표시한다.\nFROM 성적 <성적> 테이블에서 검색한다.\nORDER BY score DESC ‘score’를 기준으로 내림차순 정렬한다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      14
+    ],
+    "title": "내림차순 정렬"
+  },
+  {
+    "id": "sql-013",
+    "categoryId": "sql",
+    "number": 13,
+    "prompt": "다음은 <회원> 테이블에서 ‘이름’이 “이”로 시작하는 회원들을 ‘가입일’ 순으로 내림차순 정\n렬하는 <SQL문>이다. 괄호(①, ②)에 들어갈 알맞은 답을 쓰시오.\n<회원> 테이블\n회원번호 이름 성별 가입일\n1001 이진성 남 2021-06-23\n1002 조이령 여 2021-06-24\n1003 최민수 남 2021-06-28\n1004 김차희 여 2021-07-03\n1005 이미경 여 2021-07-10\n<SQL문>\nSELECT * FROM 회원 WHERE 이름 LIKE ‘( )’ ORDER BY 가입일 ( );",
+    "answer": "• ① 이%\n• ② DESC",
+    "explanation": "• SQL문\nSELECT * 모든 속성을 표시한다.\nFROM 회원 <회원> 테이블에서 검색한다.\nWHERE 이름 LIKE '이%' ‘이름’이 ‘이’로 시작하는 튜플만을 대상으로 한다.\nORDER BY 가입일 DESC; ‘가입일’을 기준으로 내림차순 정렬한다.\n• SQL 실행 결과\n회원번호 이름 성별 가입일\n1005 이미경 여 2021-07-10\n1001 이진성 남 2021-06-23",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      15
+    ],
+    "title": "LIKE와 ORDER BY"
+  },
+  {
+    "id": "sql-014",
+    "categoryId": "sql",
+    "number": 14,
+    "prompt": "다음 질의 내용에 대한 SQL문을 완성하시오.\n학생 테이블에서 학과별 튜플의 개수를 검색하시오.\n질의\n(단, 아래의 실행 결과가 되도록 한다.)\n<학생>\n학번 이름 학년 학과 주소\n20160011 김영란 2 전기 서울\n19210113 이재우 3 컴퓨터 대구\n21168007 함소진 1 전자 부산\n19168002 우혜정 3 전자 광주\n18120073 김진수 4 컴퓨터 울산\n<실행결과>\n학과 학과별튜플수\n전기 1\n컴퓨터 2\n전자 2\n<처리 조건>\n• WHERE 조건절은 사용할 수 없다.\n• GROUP BY는 반드시 포함한다.\n• 집계함수(Aggregation Function)를 적용한다.\n• 학과별튜플수 컬럼이름 출력에 Alias(AS)를 활용한다.\n• 문장 끝의 세미콜론(;)은 생략해도 무방하다.\n• 인용부호 사용이 필요한 경우 단일 따옴표(‘ ’ : Single Quotation)를 사용한다.",
+    "answer": "SELECT 학과, COUNT(*) AS 학과별튜플수 FROM 학생 GROUP BY 학과;",
+    "explanation": "SELECT 학과, COUNT(*) AS 학과별튜플수 ‘학과’와 개수를 표시하되, 개수의 필드명을\n‘학과별튜플수’로 표시한다.\nFROM 학생 <학생> 테이블을 대상으로 검색한다.\nGROUP BY 학과; ‘학과’를 기준으로 그룹을 지정한다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      16
+    ],
+    "title": "GROUP BY와 COUNT"
+  },
+  {
+    "id": "sql-015",
+    "categoryId": "sql",
+    "number": 15,
+    "prompt": "다음의 <성적> 테이블에서 과목별 점수의 평균이 90점 이상인 ‘과목이름’, ‘최소점수’, ‘최대\n점수’를 검색하고자 한다. <처리 조건>을 참고하여 적합한 SQL문을 작성하시오.\n<성적>\n학번 과목번호 과목이름 학점 점수\na2001 101 컴퓨터구조 6 95\na2002 101 컴퓨터구조 6 84\na2003 302 데이터베이스 5 89\na2004 201 인공지능 5 92\na2005 302 데이터베이스 5 100\na2006 302 데이터베이스 5 88\na2007 201 인공지능 5 93\n<결과>\n과목이름 최소점수 최대점수\n데이터베이스 88 100\n인공지능 92 93\n<처리 조건>\n• WHERE문은 사용하지 않는다.\n• GROUP BY와 HAVING을 이용한다.\n• 집계함수(Aggregation Function)를 사용하여 명령문을 구성한다.\n• ‘최소점수’, ‘최대점수’는 별칭(Alias)을 위한 AS문을 이용한다.\n• 명령문 마지막의 세미콜론(;)은 생략이 가능하다.\n• 인용 부호가 필요한 경우 작은따옴표(‘ ’)를 사용한다.",
+    "answer": "SELECT 과목이름, MIN(점수) AS 최소점수, MAX(점수) AS 최대점수 FROM 성적 GROUP BY 과목이름 HAVING AVG(점수) >= 90;",
+    "explanation": "❶ SELECT 과목이름, MIN(점수) AS 최소점수, MAX(점수) AS 최대점수\n❷ FROM 성적\n❸ GROUP BY 과목이름\n❹ HAVING AVG(점수) >= 90;\n❶ ‘과목이름’, ‘점수’의 최소값, ‘점수’의 최대값을 표시하되, ‘점수’의 최소값은 ‘최소점수’로, ‘점수’의\n최대값은 ‘최대점수’로 표시한다.\n❷ <성적> 테이블을 대상으로 검색한다.\n❸ ‘과목이름’을 기준으로 그룹을 지정한다.\n❹ 각 그룹별 ‘점수’의 평균이 90보다 크거나 같은 그룹만을 표시한다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      17
+    ],
+    "title": "GROUP BY와 HAVING"
+  },
+  {
+    "id": "sql-016",
+    "categoryId": "sql",
+    "number": 16,
+    "prompt": "<A> 테이블과 <B> 테이블을 참고하여 <SQL문>의 실행 결과를 쓰시오.\n\n<A>\nNAME\nSmith\nAllen\nScott\n\n<B>\nRULE\nS%\n%T%\n\n<SQL문>\nSELECT COUNT(*) CNT FROM A CROSS JOIN B WHERE A.NAME LIKE B.RULE;",
+    "answer": "4",
+    "explanation": "SELECT COUNT(*) CNT\nFROM A CROSS JOIN B\nWHERE A.NAME LIKE B.RULE;\n질의문은 각 절을 분리하여 이해하면 쉽습니다.\n• SELECT COUNT( * ) CNT : 튜플의 개수를 표시하되, 필드명은 ‘CNT’로 표시합니다.\n※ ‘SELECT COUNT( * ) AS CNT’에서 AS가 생략된 형태입니다.\n• FROM A CROSS JOIN B : <A>와 <B>를 교차 조인(CROSS JOIN)한 결과를 대상으로 검색합니다.\nA.NAME B.RULE\nSmith S%\nSmith %T%\nAllen S%\nAllen %T%\nScott S%\nScott %T%\n• WHERE A.NAME LIKE B.RULE : <A> 테이블의 ‘NAME’ 필드 값이 <B> 테이블의 ‘RULE’ 필드에\n저장된 문자열 패턴과 일치하는 튜플만을 대상으로 합니다.\n※ <B> 테이블의 ‘RULE’ 필드에 저장된 값은 ‘S%’와 ‘% t %’와 같이 문자 패턴인 ‘%’ 기호가 포함\n되어 있으므로, 조건문의 LIKE 연산자와 결합되면 다음과 같이 적용됩니다.\n- A.NAME LIKE S% : ‘A.NAME’이 “S”로 시작하는 레코드를 검색\nNAME RULE\nSmith S%\nSmith %T%\nAllen S%\nAllen %T%\nScott S%\nScott %T%\n- A.NAME LIKE %T% : ‘A.NAME’이 “T”를 포함하는 레코드를 검색\nNAME RULE\nSmith S%\nSmith %T%\nAllen S%\nAllen %T%\nScott S%\nScott %T%\n※ CROSS JOIN된 결과에서 조건을 만족하는 튜플은 다음과 같습니다. 그러므로 검색된 튜플의 개수\n는 4입니다.\nNAME RULE\nSmith S%\nSmith %T%\nScott S%\nScott %T%\n\n원문 정답 4는 LIKE의 영문 대소문자를 구분하지 않는 비교를 전제로 합니다. 대소문자를 구분하는 데이터베이스 설정에서는 %T%가 Smith와 Scott에 일치하지 않아 결과가 달라집니다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      18,
+      19
+    ],
+    "title": "CROSS JOIN과 LIKE"
+  },
+  {
+    "id": "sql-017",
+    "categoryId": "sql",
+    "number": 17,
+    "prompt": "다음 <사원> 테이블과 <동아리> 테이블을 조인(Join)한 <결과>를 확인하여 <SQL문>의 괄호(①, ②)에 들어갈 알맞은 답을 쓰시오.\n\n<사원>\n코드  이름    부서\n1601  김명해  인사\n1602  이진성  경영지원\n1731  박영광  개발\n2001  이수진  (값 없음)\n\n<동아리>\n코드  동아리명\n1601  테니스\n1731  탁구\n2001  볼링\n\n<결과>\n코드  이름    동아리명\n1601  김명해  테니스\n1602  이진성  (값 없음)\n1731  박영광  탁구\n2001  이수진  볼링\n\n<SQL문>\nSELECT a.코드, 이름, 동아리명 FROM 사원 a LEFT JOIN 동아리 b ( ① ) a.코드 = b.( ② );",
+    "answer": "• ① ON\n• ② 코드",
+    "explanation": "❶ SELECT a.코드, 이름, 동아리명\n❷ FROM 사원 a LEFT JOIN 동아리 b\n❸ ON a.코드 = b.코드;\n❶ a가 가리키는 <사원> 테이블의 ‘코드’와 ‘이름’, ‘동아리명’을 표시한다.\n❷ • LEFT JOIN이므로, 좌측의 <사원> 테이블이 기준이 되어 <사원> 테이블에 있는 튜플은 모두 표시\n하고, 우측의 <동아리> 테이블에서는 관련이 있는 튜플만 표시한다.\n• <사원>, <동아리> 테이블의 별칭으로 <a>, <b>를 지정한다. <a>는 <사원> 테이블을, <b>는 <동\n아리> 테이블을 가리키게 된다.\n❸ <사원> 테이블의 ‘코드’와 <동아리> 테이블의 ‘코드’를 기준으로 서로 JOIN한다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_02_SQL17문제.pdf",
+    "sourcePages": [
+      20
+    ],
+    "title": "LEFT JOIN 조건"
+  }
+]

@@ -1,0 +1,158 @@
+[
+  {
+    "id": "function-001",
+    "categoryId": "function",
+    "number": 1,
+    "prompt": "다음 C언어로 구현된 프로그램을 분석하여 배열 <mines>의 각 칸에 들어갈 값을 쓰시오.\n\n배열 <field>\n0 1 0 1\n0 0 0 1\n1 1 1 0\n0 1 1 1\n\n배열 <mines>의 4행 4열 값을 작성하시오.",
+    "code": "#include <stdio.h>\nmain( ) {\n    int field[4][4] = { {0,1,0,1}, {0,0,0,1}, {1,1,1,0}, {0,1,1,1} };\n    int mines[4][4] = { {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0} };\n    int w = 4, h = 4;\n    for (int y = 0; y < h; y++) {\n        for (int x = 0; x < w; x++) {\n            if (field[y][x] == 0) continue;\n            for (int j = y - 1; j <= y + 1; j++) {\n                for (int i = x - 1; i <= x + 1; i++) {\n                    if (chkover(w, h, j, i) == 1)\n                        mines[j][i] += 1;\n                }\n            }\n        }\n    }\n}\nint chkover(int w, int h, int j, int i) {\n    if (i >= 0 && i < w && j >= 0 && j < h) return 1;\n    return 0;\n}",
+    "answer": "1 1 3 2\n3 4 5 3\n3 5 6 4\n3 5 5 3",
+    "explanation": "field[y][x]가 1인 칸마다 자기 칸을 포함한 주변 3×3 영역에 1씩 더한다. chkover는 행과 열이 0 이상 4 미만인지 검사하여 배열 밖 접근을 막는다. 최종 mines의 행은 [1,1,3,2], [3,4,5,3], [3,5,6,4], [3,5,5,3]이다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_06_코드-사용자정의함수9문제.pdf",
+    "sourcePages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "title": "경계 검사와 인접 칸 누적"
+  },
+  {
+    "id": "function-002",
+    "categoryId": "function",
+    "number": 2,
+    "prompt": "다음 JAVA로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "public class Test {\n    static int[] mkarr( ) {\n        int[] tmpArr = new int[4];\n        for (int i = 0; i < tmpArr.length; i++)\n            tmpArr[i] = i;\n        return tmpArr;\n    }\n    public static void main(String[] args) {\n        int[] arr;\n        arr = mkarr( );\n        for (int i = 0; i < arr.length; i++)\n            System.out.print(arr[i]);\n    }\n}",
+    "answer": "0123",
+    "explanation": "mkarr는 길이가 4인 tmpArr를 만들고 각 인덱스 i에 i를 저장하여 [0,1,2,3]을 반환한다. main의 arr가 이를 참조하고 원소를 공백 없이 출력하므로 0123이다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_06_코드-사용자정의함수9문제.pdf",
+    "sourcePages": [
+      5,
+      6,
+      7
+    ],
+    "title": "함수에서 배열 반환"
+  },
+  {
+    "id": "function-003",
+    "categoryId": "function",
+    "number": 3,
+    "prompt": "다음 C언어로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "#include <stdio.h>\nint isPrime(int number) {\n    for (int i = 2; i < number; i++)\n        if (number % i == 0) return 0;\n    return 1;\n}\nint main() {\n    int number = 13195;\n    int max_div = 0;\n    for (int i = 2; i < number; i++)\n        if (isPrime(i) == 1 && number % i == 0) max_div = i;\n    printf(\"%d\", max_div);\n}",
+    "answer": "29",
+    "explanation": "isPrime은 2부터 number-1 사이의 수로 나누어 떨어지면 0, 그렇지 않으면 1을 반환한다. main은 13195를 나누어 떨어지게 하는 소수를 찾을 때마다 max_div를 갱신한다. 13195=5×7×13×29이므로 마지막으로 저장되는 가장 큰 소인수는 29이다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_06_코드-사용자정의함수9문제.pdf",
+    "sourcePages": [
+      8,
+      9,
+      10
+    ],
+    "title": "가장 큰 소인수"
+  },
+  {
+    "id": "function-004",
+    "categoryId": "function",
+    "number": 4,
+    "prompt": "다음 C언어로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "#include <stdio.h>\nmain() {\n    int res = mp(2, 10);\n    printf(\"%d\", res);\n}\nint mp(int base, int exp) {\n    int res = 1;\n    for (int i = 0; i < exp; i++)\n        res *= base;\n    return res;\n}",
+    "answer": "1024",
+    "explanation": "mp(2,10)은 res=1에서 시작하여 2를 10번 곱한다. 결과는 2의 10제곱인 1024이다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_06_코드-사용자정의함수9문제.pdf",
+    "sourcePages": [
+      11,
+      12
+    ],
+    "title": "반복문으로 거듭제곱"
+  },
+  {
+    "id": "function-005",
+    "categoryId": "function",
+    "number": 5,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 괄호에 들어갈 알맞은 예약어를 쓰시오.",
+    "code": "public class Test {\n    public static void main(String[] args) {\n        System.out.print(Test.check(1));\n    }\n    ( ) String check(int num){\n        return (num >= 0) ? \"positive\" : \"negative\";\n    }\n}",
+    "answer": "static",
+    "explanation": "main에서 객체를 만들지 않고 Test.check(1)처럼 클래스 이름으로 check를 호출한다. check를 클래스 메서드로 선언하는 예약어 static이 필요하다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_06_코드-사용자정의함수9문제.pdf",
+    "sourcePages": [
+      13
+    ],
+    "title": "클래스 이름으로 메서드 호출"
+  },
+  {
+    "id": "function-006",
+    "categoryId": "function",
+    "number": 6,
+    "prompt": "다음 C언어로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "#include <stdio.h>\nint r1() {\n    return 4;\n}\nint r10() {\n    return (30 + r1());\n}\nint r100() {\n    return (200 + r10());\n}\nint main() {\n    printf(\"%d\\n\", r100());\n    return 0;\n}",
+    "answer": "234",
+    "explanation": "r1()은 4를 반환하고 r10()은 30+4=34를 반환한다. r100()은 200+34=234를 반환하므로 main은 234를 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_06_코드-사용자정의함수9문제.pdf",
+    "sourcePages": [
+      14
+    ],
+    "title": "중첩 함수 호출의 반환값"
+  },
+  {
+    "id": "function-007",
+    "categoryId": "function",
+    "number": 7,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "public class Test {\n    static int[ ] arr( ) {\n        int a[ ] = new int[4];\n        int b = a.length;\n        for(int i = 0; i < b; i++)\n            a[i] = i;\n        return a;\n    }\n    public static void main(String[ ] args) {\n        int a[ ] = arr( );\n        for(int i = 0; i < a.length; i++)\n            System.out.print(a[i] + \" \");\n    }\n}",
+    "answer": "0 1 2 3",
+    "explanation": "arr()는 길이가 4인 배열 a에 0,1,2,3을 차례로 저장한 뒤 반환한다. main은 각 원소 뒤에 공백을 붙여 출력하므로 0 1 2 3이 출력된다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_06_코드-사용자정의함수9문제.pdf",
+    "sourcePages": [
+      15,
+      16
+    ],
+    "title": "배열 반환과 공백 출력"
+  },
+  {
+    "id": "function-008",
+    "categoryId": "function",
+    "number": 8,
+    "prompt": "다음 C언어로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "#include <stdio.h>\nvoid align(int a[ ]) {\n    int temp;\n    for (int i = 0; i < 4; i++)\n        for (int j = 0; j < 4 - i; j++)\n            if (a[j] > a[j+1]) {\n                temp = a[j];\n                a[j] = a[j+1];\n                a[j+1] = temp;\n            }\n}\nmain( ) {\n    int a[ ] = { 85, 75, 50, 100, 95 };\n    align(a);\n    for (int i = 0; i < 5; i++)\n        printf(\"%d \", a[i]);\n}",
+    "answer": "50 75 85 95 100",
+    "explanation": "align은 인접한 두 원소의 크기를 비교하여 앞의 값이 더 크면 temp를 이용해 교환한다. 반복할수록 큰 값이 뒤로 이동하여 배열은 [50,75,85,95,100]으로 정렬된다. main이 같은 배열을 공백으로 구분하여 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_06_코드-사용자정의함수9문제.pdf",
+    "sourcePages": [
+      17,
+      18,
+      19
+    ],
+    "title": "배열을 전달한 버블 정렬"
+  },
+  {
+    "id": "function-009",
+    "categoryId": "function",
+    "number": 9,
+    "prompt": "다음 C언어로 구현된 프로그램을 분석하여 5를 입력했을 때 그 실행 결과를 쓰시오. (단, 출\n력문의 출력 서식을 준수하시오.)",
+    "code": "#include <stdio.h>\nint func(int a) {\n    if (a <= 1) return 1;\n    return a * func(a - 1);\n}\nint main() {\n    int a;\n    scanf(\"%d\", &a);\n    printf(\"%d\", func(a));\n}",
+    "answer": "120",
+    "explanation": "func(a)는 a가 1 이하이면 1을 반환하고, 아니면 a * func(a-1)을 반환한다. 5를 입력하면 5×4×3×2×1=120이다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_06_코드-사용자정의함수9문제.pdf",
+    "sourcePages": [
+      20,
+      21
+    ],
+    "title": "재귀 팩토리얼"
+  }
+]

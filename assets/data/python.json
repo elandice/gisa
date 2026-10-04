@@ -1,0 +1,100 @@
+[
+  {
+    "id": "python-001",
+    "categoryId": "python",
+    "number": 1,
+    "prompt": "다음 Python으로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력\n서식을 준수하시오.)",
+    "code": "x, y = 100, 200\nprint(x==y)",
+    "answer": "False",
+    "explanation": "x=100, y=200이므로 x==y는 거짓이다. Python의 불리언 표기에 따라 False를 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_08_코드-Python활용6문제.pdf",
+    "sourcePages": [
+      1
+    ],
+    "title": "비교 연산자"
+  },
+  {
+    "id": "python-002",
+    "categoryId": "python",
+    "number": 2,
+    "prompt": "다음 Python으로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력\n서식을 준수하시오.)",
+    "code": "a = \"REMEMBER NOVEMBER\"\nb = a[0:3] + a[12:16]\nc = \"R AND %s\" % \"STR\"\nprint(b + c)",
+    "answer": "REMEMBER AND STR",
+    "explanation": "a[0:3]은 REM, a[12:16]은 EMBE이므로 b는 REMEMBE이다. \"R AND %s\" % \"STR\"은 R AND STR이다. b와 c를 연결하면 REMEMBER AND STR이 된다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_08_코드-Python활용6문제.pdf",
+    "sourcePages": [
+      2
+    ],
+    "title": "문자열 슬라이싱과 서식"
+  },
+  {
+    "id": "python-003",
+    "categoryId": "python",
+    "number": 3,
+    "prompt": "다음 Python으로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력\n서식을 준수하시오.)",
+    "code": "asia = {'한국', '중국', '일본'}\nasia.add('베트남')\nasia.add('중국')\nasia.remove('일본')\nasia.update({'한국', '홍콩', '태국'})\nprint(asia)",
+    "answer": "{'한국', '중국', '베트남', '홍콩', '태국'}",
+    "explanation": "집합은 중복을 허용하지 않는다. 베트남을 추가하고 중국을 다시 추가해도 중국은 하나만 남는다. 일본을 제거한 후 한국, 홍콩, 태국을 추가하면 한국, 중국, 베트남, 홍콩, 태국의 다섯 원소가 남는다. 집합의 출력 순서는 고정되지 않으므로 원소 구성이 같으면 정답이다.",
+    "aliases": [],
+    "grading": "manual",
+    "source": "정보처리기사실기_08_코드-Python활용6문제.pdf",
+    "sourcePages": [
+      3,
+      4
+    ],
+    "title": "집합의 원소 변경"
+  },
+  {
+    "id": "python-004",
+    "categoryId": "python",
+    "number": 4,
+    "prompt": "다음 Python으로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력\n서식을 준수하시오.)",
+    "code": "a = [1, 2, 3, 4, 5]\na = list(map(lambda num : num + 100, a))\nprint(a)",
+    "answer": "[101, 102, 103, 104, 105]",
+    "explanation": "map은 각 원소를 lambda num : num + 100에 전달한다. [1,2,3,4,5]의 각 원소에 100을 더한 결과를 list로 변환하여 [101, 102, 103, 104, 105]를 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_08_코드-Python활용6문제.pdf",
+    "sourcePages": [
+      4
+    ],
+    "title": "map과 lambda"
+  },
+  {
+    "id": "python-005",
+    "categoryId": "python",
+    "number": 5,
+    "prompt": "다음 Python로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서\n식을 준수하시오.)",
+    "code": "def func(num1, num2 = 2):\n    print('a =', num1, 'b =', num2)\nfunc(20)",
+    "answer": "a = 20 b = 2",
+    "explanation": "func의 num2에는 기본값 2가 지정되어 있다. func(20)은 num1에 20을 전달하고 num2는 2를 사용한다. print는 각 인수 사이에 공백을 넣으므로 a = 20 b = 2를 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_08_코드-Python활용6문제.pdf",
+    "sourcePages": [
+      5
+    ],
+    "title": "기본 매개변수"
+  },
+  {
+    "id": "python-006",
+    "categoryId": "python",
+    "number": 6,
+    "prompt": "다음 Python으로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력\n서식을 준수하시오.)",
+    "code": "class CharClass:\n    a = ['Seoul', 'Kyeongi', 'Inchon', 'Daejeon', 'Daegu', 'Pusan'];\nmyVar = CharClass()\nstr01 = ''\nfor i in myVar.a:\n    str01 = str01 + i[0]\nprint(str01)",
+    "answer": "SKIDDP",
+    "explanation": "myVar는 CharClass의 객체이고 a는 여섯 도시 이름을 담은 리스트이다. 각 문자열의 첫 글자 i[0]를 str01에 차례로 연결한다. S, K, I, D, D, P를 모으므로 SKIDDP를 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_08_코드-Python활용6문제.pdf",
+    "sourcePages": [
+      5,
+      6
+    ],
+    "title": "클래스 속성과 문자열 누적"
+  }
+]

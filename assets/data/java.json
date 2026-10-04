@@ -1,0 +1,167 @@
+[
+  {
+    "id": "java-001",
+    "categoryId": "java",
+    "number": 1,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "class Test {\n    public static void main(String args[]) {\n        cond obj = new cond(3);\n        obj.a = 5;\n        int b = obj.func( );\n        System.out.print(obj.a + b);\n    }\n}\nclass cond {\n    int a;\n    public cond(int a) {\n        this.a = a;\n    }\n    public int func( ) {\n        int b = 1;\n        for (int i = 1; i < a; i++)\n            b += a * i;\n        return a + b;\n    }\n}",
+    "answer": "61",
+    "explanation": "new cond(3)은 a를 3으로 초기화하지만 이후 obj.a=5로 바뀐다. func의 b는 1에서 시작하여 5×1, 5×2, 5×3, 5×4를 더하므로 51이다. func는 a+b=56을 반환하고 main은 obj.a+56=61을 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_07_코드-JAVA활용9문제.pdf",
+    "sourcePages": [
+      1,
+      2
+    ],
+    "title": "생성자와 객체 속성"
+  },
+  {
+    "id": "java-002",
+    "categoryId": "java",
+    "number": 2,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "class A {\n    int a;\n    int b;\n}\npublic class Test {\n    static void func1(A m) {\n        m.a *= 10;\n    }\n    static void func2(A m) {\n        m.a += m.b;\n    }\n    public static void main(String args[]) {\n        A m = new A();\n        m.a = 100;\n        func1(m);\n        m.b = m.a;\n        func2(m);\n        System.out.printf(\"%d\", m.a);\n    }\n}",
+    "answer": "2000",
+    "explanation": "func1과 func2는 main에서 만든 같은 객체 m을 참조한다. m.a=100에서 func1이 10을 곱해 1000으로 바꾼다. m.b=1000으로 저장한 후 func2가 m.a에 m.b를 더하므로 2000이다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_07_코드-JAVA활용9문제.pdf",
+    "sourcePages": [
+      3,
+      4,
+      5
+    ],
+    "title": "객체 참조를 전달한 메서드"
+  },
+  {
+    "id": "java-003",
+    "categoryId": "java",
+    "number": 3,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "public class ovr1 {\n    public static void main(String[] args) {\n        ovr1 a1 = new ovr1();\n        ovr2 a2 = new ovr2();\n        System.out.println(a1.sun(3,2) + a2.sun(3,2));\n    }\n    int sun(int x, int y) {\n        return x + y;\n    }\n}\nclass ovr2 extends ovr1 {\n    int sun(int x, int y) {\n        return x - y + super.sun(x, y);\n    }\n}",
+    "answer": "11",
+    "explanation": "ovr1의 sun(3,2)은 3+2=5를 반환한다. ovr2의 sun(3,2)은 3-2+super.sun(3,2)=1+5=6을 반환한다. 두 값을 더하여 11을 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_07_코드-JAVA활용9문제.pdf",
+    "sourcePages": [
+      5,
+      6
+    ],
+    "title": "오버라이딩과 super"
+  },
+  {
+    "id": "java-004",
+    "categoryId": "java",
+    "number": 4,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "class A {\n    int a;\n    public A(int a) { this.a = a; }\n    void display() { System.out.println(\"a=\" + a); }\n}\nclass B extends A {\n    public B(int a) {\n        super(a);\n        super.display();\n    }\n}\npublic class Test {\n    public static void main(String[] args) {\n        B obj = new B(10);\n    }\n}",
+    "answer": "a=10",
+    "explanation": "new B(10)에서 B의 생성자가 super(10)을 호출하여 A의 a에 10을 저장한다. 이어서 super.display()가 \"a=\"와 a를 연결한 a=10을 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_07_코드-JAVA활용9문제.pdf",
+    "sourcePages": [
+      7,
+      8,
+      9
+    ],
+    "title": "상위 클래스 생성자 호출"
+  },
+  {
+    "id": "java-005",
+    "categoryId": "java",
+    "number": 5,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 괄호에 들어갈 알맞은 답을 쓰시오.",
+    "code": "class Car implements Runnable {\n    int a;\n    public void run() {\n        try {\n            while(++a < 100) {\n                System.out.println(\"miles traveled : \" + a);\n                Thread.sleep(100);\n            }\n        } catch(Exception E) { }\n    }\n}\npublic class Test {\n    public static void main(String args[]) {\n        Thread t1 = new Thread(new ( )());\n        t1.start();\n    }\n}",
+    "answer": "Car",
+    "explanation": "Car는 Runnable 인터페이스를 구현하고 run()을 정의한다. new Thread(new Car())처럼 Runnable 객체를 Thread 생성자에 전달해야 하므로 괄호에는 Car가 들어간다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_07_코드-JAVA활용9문제.pdf",
+    "sourcePages": [
+      9,
+      10,
+      11,
+      12
+    ],
+    "title": "Runnable로 스레드 생성"
+  },
+  {
+    "id": "java-006",
+    "categoryId": "java",
+    "number": 6,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "class Connection {\n    private static Connection _inst = null;\n    private int count = 0;\n    static public Connection get() {\n        if(_inst == null) {\n            _inst = new Connection();\n            return _inst;\n        }\n        return _inst;\n    }\n    public void count() { count++; }\n    public int getCount() { return count; }\n}\npublic class Test {\n    public static void main(String[] args) {\n        Connection conn1 = Connection.get();\n        conn1.count();\n        Connection conn2 = Connection.get();\n        conn2.count();\n        Connection conn3 = Connection.get();\n        conn3.count();\n        System.out.print(conn1.getCount());\n    }\n}",
+    "answer": "3",
+    "explanation": "Connection.get()은 처음 한 번만 새 객체를 만들고 이후에는 정적 변수 _inst에 저장한 같은 객체를 반환한다. conn1, conn2, conn3이 같은 객체의 count()를 총 3회 호출하므로 getCount()는 3을 반환한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_07_코드-JAVA활용9문제.pdf",
+    "sourcePages": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
+    "title": "싱글턴의 공유 상태"
+  },
+  {
+    "id": "java-007",
+    "categoryId": "java",
+    "number": 7,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 괄호에 들어갈 알맞은 답을 쓰시오.",
+    "code": "class Parent {\n    void show() { System.out.println(\"parent\"); }\n}\nclass Child extends Parent {\n    void show() { System.out.println(\"child\"); }\n}\npublic class Test {\n    public static void main(String[] args) {\n        Parent pa = ( ) Child();\n        pa.show();\n    }\n}",
+    "answer": "new",
+    "explanation": "객체를 생성할 때 사용하는 예약어는 new이다. Parent pa = new Child()로 생성하면 pa.show()는 실제 객체 Child에서 재정의한 show()를 호출하여 child를 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_07_코드-JAVA활용9문제.pdf",
+    "sourcePages": [
+      18,
+      19
+    ],
+    "title": "객체 생성과 동적 메서드 호출"
+  },
+  {
+    "id": "java-008",
+    "categoryId": "java",
+    "number": 8,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "class Parent {\n    int compute(int num) {\n        if(num <= 1) return num;\n        return compute(num - 1) + compute(num - 2);\n    }\n}\nclass Child extends Parent {\n    int compute(int num) {\n        if(num <= 1) return num;\n        return compute(num - 1) + compute(num - 3);\n    }\n}\npublic class Test {\n    public static void main(String[] args) {\n        Parent obj = new Child();\n        System.out.print(obj.compute(4));\n    }\n}",
+    "answer": "1",
+    "explanation": "obj의 선언형은 Parent지만 실제 객체는 Child이므로 Child.compute가 호출된다. 이 메서드는 num<=1이면 num 자체를 반환하고, 나머지는 compute(num-1)+compute(num-3)이다. compute(2)=1+(-1)=0, compute(3)=0+0=0, compute(4)=0+1=1이다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_07_코드-JAVA활용9문제.pdf",
+    "sourcePages": [
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "title": "오버라이딩된 재귀 호출"
+  },
+  {
+    "id": "java-009",
+    "categoryId": "java",
+    "number": 9,
+    "prompt": "다음 Java로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "abstract class Vehicle {\n    String name;\n    abstract public String getName(String val);\n    public String getName() {\n        return \"Vehicle name : \" + name;\n    }\n}\nclass Car extends Vehicle {\n    private String name;\n    public Car(String val) {\n        name = super.name = val;\n    }\n    public String getName(String val) {\n        return \"Car name : \" + val;\n    }\n    public String getName(byte[] val) {\n        return \"Car name : \" + val;\n    }\n}\npublic class Test {\n    public static void main(String[] args) {\n        Vehicle obj = new Car(\"Spark\");\n        System.out.print(obj.getName());\n    }\n}",
+    "answer": "Vehicle name : Spark",
+    "explanation": "Car 생성자는 자식의 name과 super.name을 모두 Spark로 저장한다. obj.getName()에는 인수가 없으므로 Vehicle의 매개변수 없는 메서드를 호출한다. 이 메서드는 Vehicle의 name을 사용하여 Vehicle name : Spark를 반환한다. Car의 인수가 있는 getName 메서드들은 호출되지 않는다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_07_코드-JAVA활용9문제.pdf",
+    "sourcePages": [
+      25,
+      26
+    ],
+    "title": "추상 클래스와 메서드 오버로딩"
+  }
+]

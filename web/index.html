@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="193개의 PDF 기출 문제로 배우고, 시험 보고, 오답을 복습하는 정보처리기사 실기 학습 앱 차곡.">
+  <meta name="theme-color" content="#ECF0F5">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="차곡">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>차곡 · 정보처리기사 실기</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <style>html,body{margin:0;background:#ECF0F5} #loading{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-family:sans-serif;color:#344158} #loading b{font-size:30px;color:#7468C6} #loading p{font-size:13px;color:#68778D}</style>
+  <div id="loading"><b>차곡</b><p>학습 공간을 준비하고 있어요.</p></div>
+  <script>window.addEventListener('flutter-first-frame',()=>document.getElementById('loading')?.remove());</script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+[
+  {
+    "id": "pointer-001",
+    "categoryId": "pointer",
+    "number": 1,
+    "prompt": "다음 C언어로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "#include <stdio.h>\nint len(char* p);\nint main( ) {\n    char* p1 = \"2022\";\n    char* p2 = \"202207\";\n    int a = len(p1);\n    int b = len(p2);\n    printf(\"%d\", a + b);\n}\nint len(char* p) {\n    int r = 0;\n    while (*p != '\\0') {\n        p++;\n        r++;\n    }\n    return r;\n}",
+    "answer": "10",
+    "explanation": "len은 포인터가 문자열 종료 문자 \\0을 만날 때까지 p와 r을 1씩 증가시킨다. \"2022\"의 길이는 4, \"202207\"의 길이는 6이므로 두 길이의 합 10을 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_04_코드-포인터5문제.pdf",
+    "sourcePages": [
+      1,
+      2,
+      3
+    ],
+    "title": "문자열 길이와 포인터"
+  },
+  {
+    "id": "pointer-002",
+    "categoryId": "pointer",
+    "number": 2,
+    "prompt": "다음 C언어로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "#include <stdio.h>\nint main( ) {\n    int a[4] = { 0, 2, 4, 8 };\n    int b[3];\n    int* p;\n    int sum = 0;\n    for (int i = 1; i < 4; i++) {\n        p = a + i;\n        b[i - 1] = *p - a[i - 1];\n        sum = sum + b[i - 1] + a[i];\n    }\n    printf(\"%d\", sum);\n}",
+    "answer": "22",
+    "explanation": "p=a+i는 a[i]를 가리키므로 *p는 a[i]이다. i=1,2,3일 때 b[i-1]은 각각 2,2,4이고 sum에 더하는 값은 각각 2+2=4, 2+4=6, 4+8=12이다. 합계는 22이다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_04_코드-포인터5문제.pdf",
+    "sourcePages": [
+      4,
+      5
+    ],
+    "title": "배열과 포인터 연산"
+  },
+  {
+    "id": "pointer-003",
+    "categoryId": "pointer",
+    "number": 3,
+    "prompt": "다음 C 언어로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서\n식을 준수하시오.)",
+    "code": "#include <stdio.h>\nint main() {\n    int* array[3];\n    int a = 12, b = 24, c = 36;\n    array[0] = &a;\n    array[1] = &b;\n    array[2] = &c;\n    printf(\"%d\", *array[1] + **array + 1);\n}",
+    "answer": "37",
+    "explanation": "array[1]은 b의 주소이므로 *array[1]=24이다. array는 첫 요소 array[0]을 가리키고 그 요소는 a의 주소이므로 **array=12이다. 24+12+1=37을 출력한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_04_코드-포인터5문제.pdf",
+    "sourcePages": [
+      6,
+      7
+    ],
+    "title": "포인터 배열의 역참조"
+  },
+  {
+    "id": "pointer-004",
+    "categoryId": "pointer",
+    "number": 4,
+    "prompt": "다음 C언어로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서식\n을 준수하시오.)",
+    "code": "#include <stdio.h>\nint main() {\n    int ary[3];\n    int s = 0;\n    *(ary + 0) = 1;\n    ary[1] = *(ary + 0) + 2;\n    ary[2] = *ary + 3;\n    for (int i = 0; i < 3; i++)\n        s = s + ary[i];\n    printf(\"%d\", s);\n}",
+    "answer": "8",
+    "explanation": "*(ary+0)과 *ary는 ary[0]과 같다. ary[0]=1, ary[1]=1+2=3, ary[2]=1+3=4가 된다. 반복문으로 합산하면 8이다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_04_코드-포인터5문제.pdf",
+    "sourcePages": [
+      8,
+      9
+    ],
+    "title": "배열 표기와 포인터 표기"
+  },
+  {
+    "id": "pointer-005",
+    "categoryId": "pointer",
+    "number": 5,
+    "prompt": "다음 C 언어로 구현된 프로그램을 분석하여 그 실행 결과를 쓰시오. (단, 출력문의 출력 서\n식을 준수하시오.)",
+    "code": "#include <stdio.h>\nmain() {\n    char* p = \"KOREA\";\n    printf(\"%s\\n\", p);\n    printf(\"%s\\n\", p + 3);\n    printf(\"%c\\n\", *p);\n    printf(\"%c\\n\", *(p + 3));\n    printf(\"%c\\n\", *p + 2);\n}",
+    "answer": "KOREA\nEA\nK\nE\nM",
+    "explanation": "%s에 p를 전달하면 전체 문자열 KOREA, p+3을 전달하면 3번째 인덱스부터의 문자열 EA를 출력한다. *p는 K, *(p+3)은 E이다. *p+2는 K의 문자 코드에 2를 더한 M이다. 각 출력은 줄바꿈한다.",
+    "aliases": [],
+    "grading": "exact",
+    "source": "정보처리기사실기_04_코드-포인터5문제.pdf",
+    "sourcePages": [
+      10,
+      11
+    ],
+    "title": "문자열 포인터와 문자 연산"
+  }
+]
