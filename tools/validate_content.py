@@ -18,7 +18,7 @@ import struct
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = Path(r"C:\Users\qkrgk\OneDrive\문서\카카오톡 받은 파일")
+DEFAULT_SOURCE = ROOT / "source-pdfs"
 MANIFEST = [
     ("keywords.json", "keyword", 130, 44, "정보처리기사실기_01_키워드찾기130문제.pdf"),
     ("sql.json", "sql", 17, 20, "정보처리기사실기_02_SQL17문제.pdf"),
@@ -53,6 +53,9 @@ def main() -> int:
     except ImportError:
         PdfReader = None
         notes.append("pypdf unavailable: source page bounds use the verified source manifest.")
+        if arguments.source_dir:
+            print("ERROR: --source-dir verification requires pypdf. Install pypdf first.", file=sys.stderr)
+            return 1
 
     for data_file, category, count, page_count, source_name in MANIFEST:
         data_path = ROOT / "assets" / "data" / data_file

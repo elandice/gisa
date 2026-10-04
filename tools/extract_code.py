@@ -1,10 +1,11 @@
 from pathlib import Path
+import argparse
 import json
 import re
 import pdfplumber
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = Path(r'C:\Users\qkrgk\OneDrive\문서\카카오톡 받은 파일')
+SOURCE = ROOT / 'source-pdfs'
 FILES = [
     ('03', 'control', 'control', '14', '제어문'),
     ('04', 'pointer', 'pointers', '5', '포인터'),
@@ -160,16 +161,29 @@ def write_data(data):
     print(f'Total: {total} questions')
 
 if __name__ == '__main__':
-    import sys
+    parser = argparse.ArgumentParser(description='제공받은 코드 PDF 6종에서 문제를 추출합니다.')
+    parser.add_argument('--source-dir', type=Path, default=SOURCE,
+                        help='원본 PDF 폴더 (기본값: 프로젝트의 source-pdfs)')
+    display = parser.add_mutually_exclusive_group()
+    display.add_argument('--dump', action='store_true')
+    display.add_argument('--raw', choices=[item[1] for item in FILES])
+    arguments = parser.parse_args()
+    SOURCE = arguments.source_dir
+    if not SOURCE.is_dir():
+        parser.error(f'원본 PDF 폴더가 없습니다: {SOURCE}. --source-dir로 지정해주세요.')
+    for prefix, *_ in FILES:
+        matches = list(SOURCE.glob(f'정보처리기사실기_{prefix}_*.pdf'))
+        if len(matches) != 1:
+            parser.error(f'{prefix}번 원본 PDF가 하나씩 있어야 합니다 (현재 {len(matches)}개).')
     data = collect()
-    if '--dump' in sys.argv:
+    if arguments.dump:
         for group in data:
             print('\nFILE', group['source'], 'QUESTIONS', len(group['questions']))
             for question in group['questions']:
                 print('\nQUESTION', question['number'], 'PAGES', question['pages'])
                 print(question['raw'].split('[해설]')[0])
-    elif '--raw' in sys.argv:
-        category = sys.argv[-1]
+    elif arguments.raw:
+        category = arguments.raw
         for group in data:
             if group['category'] == category:
                 for question in group['questions']:

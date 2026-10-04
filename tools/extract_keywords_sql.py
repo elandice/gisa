@@ -4,12 +4,13 @@ Question starts are matched in strict source order; answer/explanation numbering
 cannot accidentally create questions. Source data is never executed.
 """
 from pathlib import Path
+import argparse
 import json
 import re
 import pdfplumber
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = Path(r"C:\Users\qkrgk\OneDrive\문서\카카오톡 받은 파일")
+SOURCE = ROOT / "source-pdfs"
 DATA = ROOT / "assets" / "data"
 ASSETS = ROOT / "assets" / "prompts"
 DATA.mkdir(parents=True, exist_ok=True)
@@ -296,6 +297,15 @@ SELECT a.코드, 이름, 동아리명 FROM 사원 a LEFT JOIN 동아리 b ( ① 
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-dir", type=Path, default=SOURCE,
+                        help="원본 PDF 폴더 (기본값: 프로젝트의 source-pdfs)")
+    SOURCE = parser.parse_args().source_dir
+    if not SOURCE.is_dir():
+        parser.error(f"원본 PDF 폴더가 없습니다: {SOURCE}. --source-dir로 지정해주세요.")
+    for filename in ["정보처리기사실기_01_키워드찾기130문제.pdf", "정보처리기사실기_02_SQL17문제.pdf"]:
+        if not (SOURCE / filename).is_file():
+            parser.error(f"원본 PDF가 없습니다: {filename}")
     for name, records in [("keywords", keyword_questions()), ("sql", sql_questions())]:
         for record in records:
             assert record["prompt"].strip() and record["answer"].strip()

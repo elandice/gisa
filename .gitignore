@@ -29,6 +29,8 @@ migrate_working_dir/
 .dart_tool/
 /tmp/
 /output/
+/source-pdfs/
+__pycache__/
 # Original variable font used only while preparing the static app fonts.
 /assets/fonts/NotoSansKR.ttf
 .flutter-plugins-dependencies

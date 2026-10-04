@@ -34,7 +34,8 @@ StudyCategory categoryById(String id) => categories.firstWhere(
   orElse: () => throw ArgumentError.value(id, 'id', '알 수 없는 학습 분류'),
 );
 
-/// Normalizes typing variations without merging distinct output tokens.
+/// Normalizes case-insensitive keyword and SQL-token typing variations.
+/// Program output and source-code answers must use [normalizeProgramAnswer].
 String normalizeAnswer(String value) {
   final fullWidthNormalized = String.fromCharCodes(
     value.runes.map((rune) {
@@ -51,6 +52,85 @@ String normalizeAnswer(String value) {
         RegExp(r'\s*([,;:()\[\]{}=+*/<>])\s*'),
         (match) => match[1]!,
       );
+}
+
+/// Keeps output case, punctuation, spaces and line boundaries significant.
+/// The answer sheets omit final newlines and trailing spaces from print loops,
+/// so those and whitespace outside the complete response are harmless.
+String normalizeProgramAnswer(String value) => value
+    .replaceAll('\r\n', '\n')
+    .replaceAll('\r', '\n')
+    .trim()
+    .split('\n')
+    .map((line) => line.replaceFirst(RegExp(r'[ \t]+$'), ''))
+    .join('\n');
+
+String _readId(Map<String, dynamic> json, String key) {
+  final value = json[key];
+  if (value is! String || value.isEmpty || value.trim() != value) {
+    throw FormatException('유효하지 않은 식별자: $key');
+  }
+  return value;
+}
+
+int _readPositiveInt(Map<String, dynamic> json, String key) {
+  final value = json[key];
+  if (value is! int || value <= 0) {
+    throw FormatException('양의 정수가 필요한 항목: $key');
+  }
+  return value;
+}
+
+/// DateTime.parse accepts overflowing calendar dates (for example February 30).
+/// Reject those instead of silently moving saved answers to a different day.
+DateTime _readDateTime(Map<String, dynamic> json, String key) {
+  final value = json[key];
+  final components = value is String
+      ? RegExp(
+          r'^([+-]?\d{4,6})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})'
+          r'(?:\.\d{1,6})?(?:Z|[+-](\d{2}):(\d{2}))?$',
+        ).firstMatch(value)
+      : null;
+  if (components == null) {
+    throw FormatException('유효하지 않은 시각: $key');
+  }
+  final year = int.parse(components[1]!);
+  final month = int.parse(components[2]!);
+  final day = int.parse(components[3]!);
+  final hour = int.parse(components[4]!);
+  final minute = int.parse(components[5]!);
+  final second = int.parse(components[6]!);
+  final offsetHour = int.parse(components[7] ?? '0');
+  final offsetMinute = int.parse(components[8] ?? '0');
+  final leapYear = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+  final monthDays = [
+    31,
+    leapYear ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
+  if (month < 1 ||
+      month > 12 ||
+      day < 1 ||
+      day > monthDays[month - 1] ||
+      hour > 23 ||
+      minute > 59 ||
+      second > 59 ||
+      offsetHour > 23 ||
+      offsetMinute > 59) {
+    throw FormatException('유효하지 않은 시각: $key');
+  }
+  final parsed = DateTime.tryParse(value as String);
+  if (parsed == null) throw FormatException('유효하지 않은 시각: $key');
+  return parsed;
 }
 
 class Question {
@@ -90,12 +170,15 @@ class Question {
   /// Descriptive answers deliberately require the learner's explicit judgment.
   bool? grade(String response) {
     if (isManual) return null;
-    final normalized = normalizeAnswer(response);
+    final normalize = categoryId == 'keyword' || categoryId == 'sql'
+        ? normalizeAnswer
+        : normalizeProgramAnswer;
+    final normalized = normalize(response);
     if (normalized.isEmpty) return false;
     return [
       answer,
       ...aliases,
-    ].any((accepted) => normalizeAnswer(accepted) == normalized);
+    ].any((accepted) => normalize(accepted) == normalized);
   }
 
   factory Question.fromJson(Map<String, dynamic> json) {
@@ -106,9 +189,9 @@ class Question {
     final categoryId = json['categoryId'] as String;
     categoryById(categoryId);
     return Question(
-      id: json['id'] as String,
+      id: _readId(json, 'id'),
       categoryId: categoryId,
-      number: json['number'] as int,
+      number: _readPositiveInt(json, 'number'),
       title: json['title'] as String,
       prompt: json['prompt'] as String,
       code: json['code'] as String?,
@@ -174,10 +257,10 @@ class WrongAnswer {
   );
 
   factory WrongAnswer.fromJson(Map<String, dynamic> json) => WrongAnswer(
-    questionId: json['questionId'] as String,
+    questionId: _readId(json, 'questionId'),
     userAnswer: json['userAnswer'] as String,
-    lastAttemptAt: DateTime.parse(json['lastAttemptAt'] as String),
-    count: json['count'] as int,
+    lastAttemptAt: _readDateTime(json, 'lastAttemptAt'),
+    count: _readPositiveInt(json, 'count'),
     memo: json['memo'] as String? ?? '',
     resolved: json['resolved'] as bool? ?? false,
   );
@@ -217,10 +300,10 @@ class QuestionResult {
   );
 
   factory QuestionResult.fromJson(Map<String, dynamic> json) => QuestionResult(
-    questionId: json['questionId'] as String,
+    questionId: _readId(json, 'questionId'),
     userAnswer: json['userAnswer'] as String,
     isCorrect: json['isCorrect'] as bool?,
-    answeredAt: DateTime.parse(json['answeredAt'] as String),
+    answeredAt: _readDateTime(json, 'answeredAt'),
   );
 
   Map<String, dynamic> toJson() => {
@@ -274,12 +357,28 @@ class ExamSession {
 
   Duration remainingAt(DateTime now) {
     if (isFinished) return Duration.zero;
+    if (now.isBefore(startedAt)) return Duration(minutes: durationMinutes);
     final remaining = deadline.difference(now);
     return remaining.isNegative ? Duration.zero : remaining;
   }
 
   void setAnswer(QuestionResult result) {
     if (isFinished) throw StateError('제출한 시험의 답안은 수정할 수 없습니다.');
+    if (!questions.any((question) => question.id == result.questionId)) {
+      throw ArgumentError.value(
+        result.questionId,
+        'questionId',
+        '출제하지 않은 문제입니다.',
+      );
+    }
+    if (result.answeredAt.isBefore(startedAt) ||
+        result.answeredAt.isAfter(deadline)) {
+      throw ArgumentError.value(
+        result.answeredAt,
+        'answeredAt',
+        '시험 시간 밖의 답안입니다.',
+      );
+    }
     _answers[result.questionId] = result;
   }
 
@@ -297,22 +396,63 @@ class ExamSession {
     Map<String, Question> questions,
   ) {
     final ids = List<String>.from(json['questionIds'] as List);
-    if (ids.any((id) => !questions.containsKey(id))) {
+    if (ids.isEmpty || ids.toSet().length != ids.length) {
+      throw const FormatException('시험 문제는 비어 있거나 중복될 수 없습니다.');
+    }
+    if (ids.any(
+      (id) => !questions.containsKey(id) || questions[id]!.id != id,
+    )) {
       throw const FormatException('시험 문제를 찾을 수 없습니다.');
     }
-    final answers = (json['answers'] as List).map(
+    final answers = (json['answers'] as List)
+        .map(
+          (answer) =>
+              QuestionResult.fromJson(Map<String, dynamic>.from(answer as Map)),
+        )
+        .toList();
+    if (answers.map((answer) => answer.questionId).toSet().length !=
+            answers.length ||
+        answers.any((answer) => !ids.contains(answer.questionId))) {
+      throw const FormatException('시험 답안이 중복되었거나 출제 문제와 일치하지 않습니다.');
+    }
+    final startedAt = _readDateTime(json, 'startedAt');
+    final durationMinutes = _readPositiveInt(json, 'durationMinutes');
+    final duration = Duration(minutes: durationMinutes);
+    if (duration.inMinutes != durationMinutes) {
+      throw const FormatException('유효하지 않은 시험 시간');
+    }
+    DateTime deadline;
+    try {
+      deadline = startedAt.add(duration);
+    } on ArgumentError {
+      throw const FormatException('유효하지 않은 시험 시간');
+    }
+    if (!deadline.isAfter(startedAt)) {
+      throw const FormatException('유효하지 않은 시험 시간');
+    }
+    final finishedAt = json['finishedAt'] == null
+        ? null
+        : _readDateTime(json, 'finishedAt');
+    if (finishedAt != null &&
+        (finishedAt.isBefore(startedAt) || finishedAt.isAfter(deadline))) {
+      throw const FormatException('시험 종료 시각이 시험 시간 밖에 있습니다.');
+    }
+    final lastAnswerAt = finishedAt ?? deadline;
+    if (answers.any(
       (answer) =>
-          QuestionResult.fromJson(Map<String, dynamic>.from(answer as Map)),
-    );
+          answer.answeredAt.isBefore(startedAt) ||
+          answer.answeredAt.isAfter(lastAnswerAt) ||
+          (!questions[answer.questionId]!.isManual && answer.pendingManual),
+    )) {
+      throw const FormatException('시험 답안의 시각 또는 채점 상태가 유효하지 않습니다.');
+    }
     return ExamSession(
-      id: json['id'] as String,
+      id: _readId(json, 'id'),
       questions: ids.map((id) => questions[id]!).toList(),
-      startedAt: DateTime.parse(json['startedAt'] as String),
-      durationMinutes: json['durationMinutes'] as int,
+      startedAt: startedAt,
+      durationMinutes: durationMinutes,
       answers: {for (final answer in answers) answer.questionId: answer},
-      finishedAt: json['finishedAt'] == null
-          ? null
-          : DateTime.parse(json['finishedAt'] as String),
+      finishedAt: finishedAt,
     );
   }
 }
@@ -359,17 +499,35 @@ class ExamResult {
         .toList(),
   );
 
-  factory ExamResult.fromJson(Map<String, dynamic> json) => ExamResult(
-    id: json['id'] as String,
-    startedAt: DateTime.parse(json['startedAt'] as String),
-    finishedAt: DateTime.parse(json['finishedAt'] as String),
-    results: (json['results'] as List)
+  factory ExamResult.fromJson(Map<String, dynamic> json) {
+    final startedAt = _readDateTime(json, 'startedAt');
+    final finishedAt = _readDateTime(json, 'finishedAt');
+    final results = (json['results'] as List)
         .map(
           (result) =>
               QuestionResult.fromJson(Map<String, dynamic>.from(result as Map)),
         )
-        .toList(),
-  );
+        .toList();
+    if (results.isEmpty ||
+        results.map((result) => result.questionId).toSet().length !=
+            results.length) {
+      throw const FormatException('시험 결과는 비어 있거나 중복될 수 없습니다.');
+    }
+    if (finishedAt.isBefore(startedAt) ||
+        results.any(
+          (result) =>
+              result.answeredAt.isBefore(startedAt) ||
+              result.answeredAt.isAfter(finishedAt),
+        )) {
+      throw const FormatException('시험 결과의 시각이 유효하지 않습니다.');
+    }
+    return ExamResult(
+      id: _readId(json, 'id'),
+      startedAt: startedAt,
+      finishedAt: finishedAt,
+      results: results,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'id': id,
